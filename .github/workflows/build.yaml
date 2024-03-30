@@ -1,0 +1,26 @@
+name: Build And Test
+on:
+  push:
+    branches:
+      - main
+      - develop
+      - develop/**
+      - feature/**
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 8.0.x
+      - name: Restore dependencies
+        run: dotnet restore src/DemoComp.DemoGrpcServer/DemoComp.DemoGrpcServer.csproj
+      - name: DotNet Build
+        run: dotnet build src/DemoComp.DemoGrpcServer/DemoComp.DemoGrpcServer.csproj --no-restore
+      - name: Restore Unit Test dependencies
+        run:  dotnet restore tests/DemoComp.DemoGrpcServer.Test/DemoComp.DemoGrpcServer.Test.csproj
+      - name: DotNet Unit Test
+        run:  dotnet test tests/DemoComp.DemoGrpcServer.Test/DemoComp.DemoGrpcServer.Test.csproj --no-restore

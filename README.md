@@ -2,6 +2,8 @@
 
 gRPC Server Project
 
+[![Build And Test](https://github.com/demo-grpc-dotnet-apps/demo-grpc-server/actions/workflows/build.yaml/badge.svg?branch=main)](https://github.com/demo-grpc-dotnet-apps/demo-grpc-server/actions/workflows/build.yaml)
+
 ## How to Build
 
 ```shell
