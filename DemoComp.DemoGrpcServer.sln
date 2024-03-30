@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DemoComp.DemoGrpcServer", "src\DemoComp.DemoGrpcServer\DemoComp.DemoGrpcServer.csproj", "{5C26404A-25B8-4DEE-BC5E-A895EACF7A5B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DemoComp.DemoGrpcServer.Test", "tests\DemoComp.DemoGrpcServer.Test\DemoComp.DemoGrpcServer.Test.csproj", "{5C2F299B-13A8-47DC-823B-A718BFAE802F}"
+EndProject
+Global
+    GlobalSection(SolutionConfigurationPlatforms) = preSolution
+        Debug|Any CPU = Debug|Any CPU
+        Release|Any CPU = Release|Any CPU
+    EndGlobalSection
+    GlobalSection(ProjectConfigurationPlatforms) = postSolution
+        {5C26404A-25B8-4DEE-BC5E-A895EACF7A5B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+        {5C26404A-25B8-4DEE-BC5E-A895EACF7A5B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+        {5C26404A-25B8-4DEE-BC5E-A895EACF7A5B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+        {5C26404A-25B8-4DEE-BC5E-A895EACF7A5B}.Release|Any CPU.Build.0 = Release|Any CPU
+        {5C2F299B-13A8-47DC-823B-A718BFAE802F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+        {5C2F299B-13A8-47DC-823B-A718BFAE802F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+        {5C2F299B-13A8-47DC-823B-A718BFAE802F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+        {5C2F299B-13A8-47DC-823B-A718BFAE802F}.Release|Any CPU.Build.0 = Release|Any CPU
+    EndGlobalSection
+EndGlobal
