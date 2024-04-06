@@ -3,7 +3,9 @@ using FluentAssertions;
 using Grpc.Net.Client;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
+using Serilog;
 using Xunit.Abstractions;
+using Xunit.Sdk;
 
 namespace DemoComp.DemoGrpcServer.Test.IntegrationTests.Greet;
 
@@ -20,18 +22,18 @@ public class SayHelloTest : IClassFixture<WebApplicationFactory<Program>>
     private readonly Greeter.GreeterClient _client;
 
     /// <summary>
-    ///     Represents a class which can be used to provide test output.
+    ///     ログを出力するためのヘルパー
     /// </summary>
-    private readonly ITestOutputHelper _testOutputHelper;
+    private readonly TestOutputHelper _logOutput;
 
     /// <summary>
     ///     Constructor.
     /// </summary>
     /// <param name="webApplicationFactory">Factory for bootstrapping an application in memory for functional end to end tests.</param>
-    /// <param name="testOutputHelper">Logger</param>
-    public SayHelloTest(WebApplicationFactory<Program> webApplicationFactory, ITestOutputHelper testOutputHelper)
+    /// <param name="iTestOutputHelper">Logger</param>
+    public SayHelloTest(WebApplicationFactory<Program> webApplicationFactory, ITestOutputHelper iTestOutputHelper)
     {
-        _testOutputHelper = testOutputHelper;
+        // gRPC Client
         var client = webApplicationFactory.WithWebHostBuilder(builder =>
         {
             builder.ConfigureTestServices(services =>
@@ -40,13 +42,18 @@ public class SayHelloTest : IClassFixture<WebApplicationFactory<Program>>
             });
         }).CreateClient();
         client.DefaultRequestVersion = HttpVersion.Version20;
-
         var channel = GrpcChannel.ForAddress(Uri, new GrpcChannelOptions
         {
             HttpClient = client
         });
-
         _client = new Greeter.GreeterClient(channel);
+
+        // Logging
+        _logOutput = (TestOutputHelper)iTestOutputHelper;
+        Log.Logger = new LoggerConfiguration()
+            .MinimumLevel.Debug()
+            .WriteTo.TestOutput(_logOutput)
+            .CreateLogger();
     }
 
     [Theory]
@@ -67,8 +74,5 @@ public class SayHelloTest : IClassFixture<WebApplicationFactory<Program>>
         // Verify
         // -------------------
         reply.Message.Should().Be(expectedMessage);
-
-        // Logging
-        _testOutputHelper.WriteLine($"Greeting: {reply.Message}");
     }
 }
