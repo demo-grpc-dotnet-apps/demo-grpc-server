@@ -1,5 +1,6 @@
 using System.Net;
 using FluentAssertions;
+using Grpc.Health.V1;
 using Grpc.Net.Client;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
@@ -7,9 +8,9 @@ using Serilog;
 using Xunit.Abstractions;
 using Xunit.Sdk;
 
-namespace DemoComp.DemoGrpcServer.Test.IntegrationTests.Greet;
+namespace DemoComp.DemoGrpcServer.Test.IntegrationTests;
 
-public class SayHelloTest : IClassFixture<WebApplicationFactory<Program>>
+public class HealthCheckTest : IClassFixture<WebApplicationFactory<Program>>
 {
     /// <summary>
     ///     gRPC Endpoint.
@@ -19,14 +20,14 @@ public class SayHelloTest : IClassFixture<WebApplicationFactory<Program>>
     /// <summary>
     ///     gRPC Client.
     /// </summary>
-    private readonly Greeter.GreeterClient _client;
+    private readonly Health.HealthClient _client;
 
     /// <summary>
     ///     Constructor.
     /// </summary>
     /// <param name="webApplicationFactory">Factory for bootstrapping an application in memory for functional end to end tests.</param>
     /// <param name="iTestOutputHelper">Logger</param>
-    public SayHelloTest(WebApplicationFactory<Program> webApplicationFactory, ITestOutputHelper iTestOutputHelper)
+    public HealthCheckTest(WebApplicationFactory<Program> webApplicationFactory, ITestOutputHelper iTestOutputHelper)
     {
         // gRPC Client
         var client = webApplicationFactory.WithWebHostBuilder(builder =>
@@ -41,7 +42,7 @@ public class SayHelloTest : IClassFixture<WebApplicationFactory<Program>>
         {
             HttpClient = client
         });
-        _client = new Greeter.GreeterClient(channel);
+        _client = new Health.HealthClient(channel);
 
         // Logging
         var logOutput = (TestOutputHelper)iTestOutputHelper;
@@ -51,23 +52,22 @@ public class SayHelloTest : IClassFixture<WebApplicationFactory<Program>>
             .CreateLogger();
     }
 
-    [Theory]
-    [InlineData("Taro", "Hello Taro")]
-    public async Task Test(string inputName, string expectedMessage)
+    [Fact]
+    public async Task Test()
     {
         // -------------------
         // Setup
         // -------------------
-        var request = new HelloRequest { Name = inputName };
+        var request = new HealthCheckRequest();
 
         // -------------------
         // Exercise
         // -------------------
-        var reply = await _client.SayHelloAsync(request);
+        var reply = await _client.CheckAsync(request);
 
         // -------------------
         // Verify
         // -------------------
-        reply.Message.Should().Be(expectedMessage);
+        reply.Status.Should().Be(HealthCheckResponse.Types.ServingStatus.Serving);
     }
 }
